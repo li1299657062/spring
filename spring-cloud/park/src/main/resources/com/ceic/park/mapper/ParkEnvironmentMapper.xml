@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ceic.park.dao.ParkEnvironmentMapper">
+    <insert id="insertParkEnvironment" parameterType="java.util.List">
+        insert INTO ic2_park_environment (park_id,env_name,env_content,r_status,r_create_time) VALUES
+        <foreach collection="environmentList" item="environment" open="(" separator="),(" close=")">
+            #{environment.parkId},#{environment.envName},#{environment.envContent},"Y",now()
+        </foreach>
+    </insert>
+
+    <update id="updateParkEnvironment" parameterType="java.util.List">
+        update ic2_park_environment
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="env_content =case" suffix="end,">
+                <foreach collection="environmentList" item="parkEnvironment" index="index">
+                    <if test="parkEnvironment.envContent!=null">
+                        when env_name=#{parkEnvironment.envName} then #{parkEnvironment.envContent}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        where
+        <foreach collection="environmentList" open="(" separator=") or (" close=")" item="parkEnvironment" index="index" >
+            park_id=#{parkEnvironment.parkId} AND env_name=#{parkEnvironment.envName}
+        </foreach>
+    </update>
+</mapper>

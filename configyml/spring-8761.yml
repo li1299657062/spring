@@ -1,4 +1,0 @@
-jdbc:
-    username: root
-server:
-  port: 8763

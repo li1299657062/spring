@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ceic.park.dao.ParkInfoMapper">
+    <sql id="park_region">
+        <if test="params.chainCode != null">
+            and ipi.chain_code like concat("%",#{params.chainCode},"%")
+        </if>
+        <if test="params.regionLevel != null and params.regionCode != null">
+            <if test='params.regionLevel == "0"'>
+                AND dr.country_code = #{params.regionCode}
+            </if>
+            <if test='params.regionLevel == "1"'>
+                AND dr.province_code = #{params.regionCode}
+            </if>
+            <if test='params.regionLevel == "2"'>
+                AND dr.city_code = #{params.regionCode}
+            </if>
+            <if test='params.regionLevel == "3"'>
+                AND dr.county_code = #{params.regionCode}
+            </if>
+        </if>
+    </sql>
+
+    <select id="selectParkInfoManage" resultType="com.ceic.park.model.park.ParkInfo">
+        select ipi.* from ic2_park_info ipi
+        JOIN dict_region dr ON dr.region_code=ipi.region_code
+        <where>
+            <if test="params.parkName!=null and params.parkName!=''">
+                AND ipi.park_name  like concat("%",#{params.parkName},"%")
+            </if>
+            <if test="params.parkType!=null and params.parkType!=''">
+                AND ipi.park_type  = #{params.parkType}
+            </if>
+            <include refid="park_region"/>
+        </where>
+    </select>
+
+    <select id="selectParkCompanyList" resultType="com.ceic.park.model.park.ParkCompany">
+        SELECT ipi.company_name AS company_name,ipc.register_capital AS register_capital,dd.code_name AS company_type_name,di.industry_name AS industry_name,ipc.company_no AS company_no,ipc.industry_code AS industry_code,ipc.company_type AS company_type
+        from ic2_park_company ipc
+        JOIN ic2_company_info ipi
+        ON ipc.company_no=ipi.company_no
+        JOIN dict_industry di
+        ON ipc.industry_code=di.industry_code
+        JOIN dict_def dd ON ipc.company_type=dd.dict_code
+        where dd.dict_id="COMPANY_TYPE" AND ipc.park_id=#{parkId}
+    </select>
+    <select id="selectOneParkInfo" resultType="com.ceic.park.model.park.ParkInfo">
+        select * from ic2_park_info where park_id=#{parkId}
+    </select>
+    <select id="selectParkEnvironmentList" resultType="com.ceic.park.model.park.ParkEnvironment">
+        select * from ic2_park_environment where  park_id=#{parkId}
+    </select>
+    <select id="selectParkInvestmentCost" resultType="com.ceic.park.model.park.ParkInvestmentCost">
+        select * from ic2_park_investment_cost where park_id=#{parkId}
+    </select>
+    <select id="selectParkMerchant" resultType="com.ceic.park.model.park.ParkMerchant">
+        select * from ic2_park_merchant where park_id=#{parkId}
+    </select>
+    <select id="selectParkResource" resultType="com.ceic.park.model.park.ParkResource">
+        select * from ic2_park_resource where park_id=#{parkId}
+    </select>
+
+
+
+    <delete id="deleteParkInfo" parameterType="java.lang.Integer">
+        DELETE ipi,ipc,ipe,ipic,ipm,ipr from ic2_park_info ipi
+        LEFT JOIN ic2_park_company ipc
+        ON ipi.park_id=ipc.park_id
+        LEFT JOIN ic2_park_environment ipe
+        ON ipi.park_id=ipe.park_id
+        LEFT JOIN ic2_park_investment_cost ipic
+        ON ipi.park_id=ipic.park_id
+        LEFT JOIN ic2_park_merchant ipm
+        ON ipi.park_id=ipm.park_id
+        LEFT JOIN ic2_park_resource ipr
+        ON ipi.park_id=ipr.park_id
+        WHERE ipi.park_id = #{parkId}
+    </delete>
+
+    <insert id="insertParkInfo" parameterType="com.ceic.park.model.park.ParkInfo" useGeneratedKeys="true" keyProperty="parkId">
+        INSERT ic2_park_info (chain_code,region_code,park_area,park_name,park_type,company_count,employee_count,park_address,park_contacts,park_email,park_phone,park_leading_industry,longitude,latitude,sort_no,r_status,r_create_time) VALUES
+        (#{chainCode},#{regionCode},#{parkArea},#{parkName},#{parkType},#{companyCount},#{employeeCount},
+        #{parkAddress},#{parkContacts},#{parkEmail},#{parkPhone},#{parkLeadingIndustry},#{longitude},#{latitude},
+        #{sortNo},"Y",now())
+    </insert>
+
+    <resultMap id="map" type="Map">
+        <result column="oneName" property="industryName"/>
+        <result column="oneCode" property="industryCode"/>
+        <collection property="industryMap" ofType="Map" javaType="ArrayList">
+            <result column="twoName" property="industryName"/>
+            <result column="twoCode" property="industryCode"/>
+            <collection property="industryMap" ofType="Map" javaType="ArrayList">
+                <result column="threeName" property="industryName"/>
+                <result column="threeCode" property="industryCode"/>
+                <collection property="industryMap" ofType="Map" javaType="ArrayList">
+                    <result column="fourName" property="industryName"/>
+                    <result column="fourCode" property="industryCode"/>
+                </collection>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="selectIndustry" resultMap="map">
+        SELECT
+        di0.industry_name AS oneName,di0.industry_code AS oneCode,
+        di1.industry_name AS twoName,di1.industry_code AS twoCode,
+        di2.industry_name AS threeName,di2.industry_code AS threeCode,
+        di3.industry_name AS fourName,di3.industry_code AS fourCode
+        FROM dict_industry di0
+        left JOIN dict_industry di1
+        ON di0.industry_code=di1.parent_industry_code
+        left JOIN dict_industry di2
+        ON di1.industry_code=di2.parent_industry_code
+        left JOIN dict_industry di3
+        ON di2.industry_code=di3.parent_industry_code
+        WHERE di0.industry_level=1
+    </select>
+</mapper>

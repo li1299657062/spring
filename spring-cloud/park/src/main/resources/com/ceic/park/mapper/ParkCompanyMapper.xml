@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ceic.park.dao.ParkCompanyMapper">
+    <insert id="insertParkCompany" parameterType="java.util.List">
+        insert INTO ic2_park_company (park_id,company_no,industry_code,register_capital,company_type,r_status,r_create_time) VALUES
+        <foreach collection="companyList" item="company" open="(" separator="),(" close=")">
+            #{company.parkId},#{company.companyNo},#{company.industryCode},#{company.registerCapital},#{company.companyType},"Y",now()
+        </foreach>
+    </insert>
+
+    <delete id="deleteParkCompany" parameterType="java.util.List">
+        DELETE FROM ic2_park_company WHERE park_id IN
+        <if test="parkList!=null">
+            <foreach collection="companyList" item="parkCompany" open="(" separator="," close=")">
+                #{parkCompany.parkId}
+            </foreach>
+        </if>
+    </delete>
+
+
+    <update id="updateParkCompany" parameterType="java.util.List">
+        update ic2_park_company
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="industry_code =case" suffix="end,">
+                <foreach collection="companyList" item="parkCompany" index="index">
+                    <if test="parkCompany.industryCode!=null">
+                        when company_no=#{parkCompany.companyNo} then #{parkCompany.industryCode}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix=" register_capital =case" suffix="end,">
+                <foreach collection="companyList" item="parkCompany" index="index">
+                    <if test="parkCompany.registerCapital!=null">
+                        when company_no=#{parkCompany.companyNo} then #{parkCompany.registerCapital}
+                    </if>
+                </foreach>
+            </trim>
+
+            <trim prefix="company_type =case" suffix="end," >
+                <foreach collection="companyList" item="parkCompany" index="index">
+                    <if test="parkCompany.companyType!=null">
+                        when company_no=#{parkCompany.companyNo} then #{parkCompany.companyType}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        where
+        <foreach collection="companyList" open="(" separator=") or (" close=")" item="parkCompany" index="index" >
+            park_id=#{parkCompany.parkId} AND company_no=#{parkCompany.companyNo}
+        </foreach>
+    </update>
+</mapper>

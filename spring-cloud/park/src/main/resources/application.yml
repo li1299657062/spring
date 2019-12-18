@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: park-server
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-server
+      profile: park
+      label: master
+
+
+
