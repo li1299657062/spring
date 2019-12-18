@@ -1,0 +1,55 @@
+spring:
+  datasource:
+    druid:
+      mysql:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/ceic?characterEncoding=UTF-8
+        username: root
+        password: 123456
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 30000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+  application:
+    name: park-server
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath*:/com/ceic/park/mapper/*.xml
+  type-aliases-package: com.ceic.park.model.*
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath*:/com/ceic/mapper/*.xml
+  type-aliases-package: com.ceic.model.*
+
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  page-size-zero: true
+  offset-as-page-num: true
+  row-bounds-with-count: true
+  params: count=countSql
+
+logging:
+  level:
+    org:
+      mybatis: debug
+    com:
+      ceic:
+        dao: debug
+server:
+  port: 9100
+  servlet:
+    context-path: /ceicAdmin
