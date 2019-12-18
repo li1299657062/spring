@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestService {
     @Value("${server.port}")
     private String port;
+    @Value("${jdbc.username}")
+    private String username;
 
     @GetMapping("/test1")
     public String test1(@RequestParam(value = "name")String name){
-        return  " name :"+name+"my port is :"+port;
+        return  " name :"+name+"my port is :"+username;
     }
 
 }

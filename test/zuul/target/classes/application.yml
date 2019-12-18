@@ -15,4 +15,5 @@ zuul:
     api-b:
       path: /lihang/**
       serviceId: service-feign
+      stripPrefix: false
 
