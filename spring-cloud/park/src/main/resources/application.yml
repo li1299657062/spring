@@ -6,7 +6,7 @@ spring:
       discovery:
         enabled: true
         service-id: config-server
-      profile: park
+      profile: local
       label: master
       name: springCloud-ceic
 
