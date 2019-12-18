@@ -41,11 +41,7 @@ logging:
     com:
       ceic:
         dao: debug
-server:
-  port: 9100
-  servlet:
-    context-path: /ceicAdmin
-    
+
 eureka:
   client:
     serviceUrl:

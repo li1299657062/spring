@@ -8,6 +8,13 @@ spring:
         service-id: config-server
       profile: park
       label: master
+      name: springCloud-ceic
+
+server:
+  port: 9100
+  servlet:
+    context-path: /ceicAdmin
+
 
 
 

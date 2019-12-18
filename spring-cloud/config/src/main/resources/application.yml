@@ -8,7 +8,7 @@ spring:
       server:
         git:
           uri: https://github.com/li1299657062/spring
-          search-paths: classpath:/config
+          search-paths: spring-cloud/config/src/main/resources/config
           username: 1299657062@qq.com
           password: li17671458461
       label: master
