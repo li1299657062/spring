@@ -1,4 +1,4 @@
 jdbc:
     username: root
 server:
-  port: 8762
+  port: 8763
