@@ -8,6 +8,8 @@ import java.util.Date;
 @TableName("ic2_park_company")
 @Data
 public class ParkCompany {
+    private String companyName;
+
     private Integer parkId;
 
     private Integer companyNo;
