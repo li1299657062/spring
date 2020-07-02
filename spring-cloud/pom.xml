@@ -35,7 +35,7 @@
 		<json.ver>20160212</json.ver>
 		<json-lib.ver>2.4</json-lib.ver>
 		<jdom.ver>1.1.3</jdom.ver>
-		<mysql-connector-java.ver>5.1.45</mysql-connector-java.ver>
+		<mysql-connector-java.ver>8.0.16</mysql-connector-java.ver>
 		<jackson.ver>1.9.13</jackson.ver>
 		<commons-collections.ver>4.1</commons-collections.ver>
 		<pageHelper.spring.ver>1.2.9</pageHelper.spring.ver>
