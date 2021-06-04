@@ -45,7 +45,7 @@
 		<druid-spring.ver>1.1.10</druid-spring.ver>
 		<spring-swagger>2.8.0</spring-swagger>
 		<spirng-swagger-ui>2.8.0</spirng-swagger-ui>
-		<httpclient.version>4.5.7</httpclient.version>
+		<httpclient.version>4.5.13</httpclient.version>
 	</properties>
 
 	<dependencies>
